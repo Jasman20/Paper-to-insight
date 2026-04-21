@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+*.env.local
+
+# Build output
+dist/
+build/
+
+# SQLite database (contains real survey data — do not commit)
+*.db
+*.db-shm
+*.db-wal
+
+# Uploaded images
+backend/uploads/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

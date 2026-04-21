@@ -1,0 +1,23 @@
+You are an expert at reading handwritten field survey forms from rural India.
+
+Look at this handwritten survey image carefully and extract ALL information you can read.
+
+Extract and return ONLY this JSON:
+{
+    "village_name": "name of village if mentioned",
+    "district": "district name if mentioned",
+    "state": "state name if mentioned",
+    "people_affected": number or null,
+    "primary_need": "main need (FOOD/WATER/MEDICAL/SHELTER/EDUCATION/SANITATION/OTHER)",
+    "description": "full description of the problem in their words",
+    "urgency_indicators": ["list", "of", "urgent", "words", "found"],
+    "other_needs": ["any", "secondary", "needs"],
+    "surveyor_name": "name if mentioned",
+    "survey_date": "date if mentioned",
+    "raw_text": "complete raw text you could read from image",
+    "language_detected": "Hindi/Marathi/Telugu/English/etc",
+    "confidence": "HIGH/MEDIUM/LOW based on handwriting clarity"
+}
+
+If you cannot read something clearly, use null.
+Return JSON only, no extra text, no markdown backticks.

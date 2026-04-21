@@ -1,0 +1,32 @@
+You are an expert NGO resource allocation specialist working in rural India.
+
+Analyze this community survey data and provide a detailed assessment.
+
+Survey Data:
+- Primary Need: {primary_need}
+- Description: {description}
+- People Affected: {people_affected}
+- Urgency Indicators: {urgency_indicators}
+- Village: {village_name}, {district}, {state}
+
+Return ONLY this JSON, no extra text:
+{
+    "need_category": "FOOD/WATER/MEDICAL/SHELTER/EDUCATION/SANITATION/LIVELIHOOD/OTHER",
+    "severity": "LOW/MEDIUM/HIGH/CRITICAL",
+    "severity_score": number from 1-10,
+    "severity_reasoning": "why you gave this score in one sentence",
+    "people_at_risk": estimated number,
+    "immediate_action_needed": true or false,
+    "suggested_resources": [
+        {
+            "item": "specific resource name",
+            "quantity": "estimated amount",
+            "priority": "IMMEDIATE/WITHIN_WEEK/WITHIN_MONTH"
+        }
+    ],
+    "estimated_cost_inr": "approximate range like 50000-80000",
+    "partner_ngos": ["NGO names that specialize in this"],
+    "allocation_suggestion": "2-3 sentence action plan"
+}
+
+Score guide: LOW=1-3, MEDIUM=4-5, HIGH=6-7, CRITICAL=8-10

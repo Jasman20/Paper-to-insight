@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://backend:8000
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      # Persist SQLite database between container restarts
+      - sqlite_data:/app/data
+    environment:
+      - SQLITE_DB_PATH=/app/data/surveys.db
+
+volumes:
+  sqlite_data:

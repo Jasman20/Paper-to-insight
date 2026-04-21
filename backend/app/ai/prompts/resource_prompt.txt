@@ -1,0 +1,19 @@
+Based on the following community need assessment, suggest specific actionable resources.
+
+Need Category: {need_category}
+Severity: {severity} ({severity_score}/10)
+People Affected: {people_affected}
+Location: {village_name}, {district}, {state}
+Description: {description}
+
+Return ONLY a JSON array of resources:
+[
+    {
+        "item": "exact resource name",
+        "quantity": "specific quantity with unit",
+        "priority": "IMMEDIATE/WITHIN_WEEK/WITHIN_MONTH",
+        "supplier": "where to source this from"
+    }
+]
+
+Be specific with quantities. Max 5 resources.

@@ -1,0 +1,41 @@
+{
+  "_comment": "Member 2 finalizes this on Day 1. ALL members build around this exact structure.",
+
+  "survey_id":      "uuid-auto-generated-by-firebase",
+  "uploaded_by":    "Field Worker Name",
+  "surveyor_name":  "Name from survey form",
+  "survey_date":    "2026-03-22",
+  "uploaded_at":    "2026-03-22T19:22:00Z",
+  "image_url":      "https://firebase.storage.googleapis.com/.../survey.jpg",
+  "status":         "PENDING",
+
+  "village_name":   "Barwani",
+  "district":       "Barwani",
+  "state":          "Madhya Pradesh",
+  "latitude":       null,
+  "longitude":      null,
+
+  "raw_text":           "Full extracted handwritten text from Gemini Vision",
+  "language_detected":  "Hindi",
+  "confidence":         "HIGH",
+
+  "people_affected":    240,
+  "need_category":      "MEDICAL",
+  "other_needs":        ["WATER", "FOOD"],
+  "description":        "Cholera outbreak reported. 240 people affected.",
+  "urgency_indicators": ["critical", "deaths", "immediate"],
+
+  "severity":                "CRITICAL",
+  "severity_score":          9,
+  "immediate_action_needed": true,
+  "severity_reasoning":      "3 confirmed deaths + 240 affected + no medical access",
+
+  "suggested_resources": [
+    { "item": "ORS Packets",        "quantity": "500 units", "priority": "IMMEDIATE"    },
+    { "item": "Medical Camp Setup", "quantity": "1 unit",    "priority": "IMMEDIATE"    },
+    { "item": "Water Tanker",       "quantity": "3 units",   "priority": "WITHIN_WEEK"  }
+  ],
+  "estimated_cost_inr":   "50000-80000",
+  "partner_ngos":         ["Goonj", "HelpAge India"],
+  "allocation_suggestion": "Deploy medical team immediately to Barwani gram panchayat..."
+}
