@@ -1,10 +1,8 @@
-// Color legend below the map
-// CRITICAL=red, HIGH=orange, MEDIUM=yellow, LOW=green
-const LEGEND = [
-  { label: 'CRITICAL', color: '#ef4444' },
-  { label: 'HIGH',     color: '#f97316' },
-  { label: 'MEDIUM',   color: '#eab308' },
-  { label: 'LOW',      color: '#22c55e' },
+const ITEMS = [
+  { color: '#ef4444', label: 'CRITICAL' },
+  { color: '#f97316', label: 'HIGH'     },
+  { color: '#eab308', label: 'MEDIUM'   },
+  { color: '#22c55e', label: 'LOW'      },
 ]
 
 export default function MapLegend() {
@@ -12,17 +10,11 @@ export default function MapLegend() {
     <div style={{
       display: 'flex', gap: 16, padding: '12px 16px',
       background: 'var(--surface)', flexWrap: 'wrap',
-      borderTop: '1px solid var(--border)',
     }}>
-      {LEGEND.map(({ label, color }) => (
-        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{
-            width: 10, height: 10, borderRadius: '50%',
-            background: color, flexShrink: 0,
-          }} />
-          <span style={{ fontSize: 11, color: 'var(--muted)', fontFamily: 'DM Mono, monospace' }}>
-            {label}
-          </span>
+      {ITEMS.map(({ color, label }) => (
+        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--muted)' }}>
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, boxShadow: `0 0 6px ${color}` }} />
+          {label}
         </div>
       ))}
     </div>

@@ -1,70 +1,95 @@
-import google.generativeai as genai
+from groq import Groq
 import json
+import re
 import os
-from app.config import Config
+from dotenv import load_dotenv
 
-genai.configure(api_key=Config.GEMINI_API_KEY)
+load_dotenv()
+
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 SEVERITY_PROMPT = """
-You are an expert NGO resource allocation specialist working in rural India.
-Analyze this community survey data and provide a detailed assessment.
+You are an expert NGO resource allocation specialist for rural India.
 
-Primary Need: {primary_need}
-Description: {description}
-People Affected: {people_affected}
-Urgency Indicators: {urgency_indicators}
-Village: {village_name}, {district}, {state}
+Analyze and return ONLY JSON:
 
-Return ONLY this JSON — no extra text, no markdown:
+Survey:
+- Primary Need: {primary_need}
+- Description: {description}
+- People Affected: {people_affected}
+- Urgency Words: {urgency_indicators}
+- Location: {village_name}, {district}, {state}
+
 {{
-    "need_category": "FOOD or WATER or MEDICAL or SHELTER or EDUCATION or SANITATION or LIVELIHOOD or OTHER",
-    "severity": "LOW or MEDIUM or HIGH or CRITICAL",
-    "severity_score": number from 1 to 10,
-    "severity_reasoning": "one sentence explaining the score",
-    "immediate_action_needed": true or false,
-    "suggested_resources": [
-        {{"item": "resource name", "quantity": "amount with unit", "priority": "IMMEDIATE or WITHIN_WEEK or WITHIN_MONTH"}}
-    ],
-    "estimated_cost_inr": "range like 50000-80000",
-    "allocation_suggestion": "2-3 sentence action plan"
+    "need_category": "MEDICAL",
+    "severity": "CRITICAL",
+    "severity_score": 9,
+    "severity_reasoning": "one sentence",
+    "immediate_action_needed": true,
+    "suggested_resources": [],
+    "estimated_cost_inr": "range",
+    "allocation_suggestion": "action"
 }}
-
-Score guide: LOW=1-3, MEDIUM=4-5, HIGH=6-7, CRITICAL=8-10
 """
+
+FALLBACK = {
+    "need_category": "OTHER",
+    "severity": "MEDIUM",
+    "severity_score": 5,
+    "severity_reasoning": "Could not analyze",
+    "immediate_action_needed": False,
+    "suggested_resources": [],
+    "estimated_cost_inr": "unknown",
+    "allocation_suggestion": "Manual review required",
+}
 
 def categorize_and_score(extracted_data: dict) -> dict:
     try:
-        model  = genai.GenerativeModel("gemini-1.5-flash")
+        api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            print("❌ GROQ_API_KEY not set!")
+            return FALLBACK
+
         prompt = SEVERITY_PROMPT.format(
-            primary_need       = extracted_data.get("primary_need", "OTHER"),
-            description        = extracted_data.get("description", "No description"),
-            people_affected    = extracted_data.get("people_affected", "unknown"),
-            urgency_indicators = extracted_data.get("urgency_indicators", []),
-            village_name       = extracted_data.get("village_name", ""),
-            district           = extracted_data.get("district", ""),
-            state              = extracted_data.get("state", ""),
+            primary_need       = extracted_data.get("primary_need") or "OTHER",
+            description        = extracted_data.get("description") or "No description",
+            people_affected    = extracted_data.get("people_affected") or "unknown",
+            urgency_indicators = extracted_data.get("urgency_indicators") or [],
+            village_name       = extracted_data.get("village_name") or "",
+            district           = extracted_data.get("district") or "",
+            state              = extracted_data.get("state") or "",
         )
-        response = model.generate_content(prompt)
-        text = response.text.strip()
 
-        if "```json" in text:
-            text = text.split("```json")[1].split("```")[0].strip()
-        elif "```" in text:
-            text = text.split("```")[1].split("```")[0].strip()
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[{"role": "user", "content": prompt}]
+        )
 
-        result = json.loads(text)
-        print(f"✅ Categorized: {result.get('need_category')} | {result.get('severity')} ({result.get('severity_score')}/10)")
-        return result
+        raw = response.choices[0].message.content.strip()
+
+        print(f"\n🤖 Groq response:\n{raw[:400]}\n")
+
+        result = None
+
+        try:
+            result = json.loads(raw)
+        except:
+            pass
+
+        if not result:
+            match = re.search(r'\{[\s\S]*\}', raw)
+            if match:
+                try:
+                    result = json.loads(match.group())
+                except:
+                    pass
+
+        if result:
+            print(f"✅ Categorized: {result.get('need_category')} | {result.get('severity')}")
+            return result
+        else:
+            return FALLBACK
 
     except Exception as e:
-        print(f"❌ Categorizer error: {e}")
-        return {
-            "need_category":          "OTHER",
-            "severity":               "MEDIUM",
-            "severity_score":         5,
-            "severity_reasoning":     "Could not analyze",
-            "immediate_action_needed": False,
-            "suggested_resources":    [],
-            "estimated_cost_inr":     "unknown",
-            "allocation_suggestion":  "Manual review required",
-        }
+        print(f"❌ Categorizer exception: {type(e).__name__}: {e}")
+        return FALLBACK

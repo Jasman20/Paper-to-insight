@@ -3,13 +3,27 @@ import { getHeatmapData }      from '../api'
 import HeatMap                 from '../components/map/HeatMap'
 
 export default function MapPage() {
-  const [mapData, setMapData] = useState(null)
+  const [markers, setMarkers] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     getHeatmapData()
-      .then(r => { setMapData(r.data); setLoading(false) })
-      .catch(console.error)
+      .then(r => {
+        // Backend returns {markers: [...]} — extract the array
+        const data = r.data
+        if (Array.isArray(data)) {
+          setMarkers(data)
+        } else if (data?.markers) {
+          setMarkers(data.markers)
+        } else {
+          setMarkers([])
+        }
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('Map load error:', err)
+        setLoading(false)
+      })
   }, [])
 
   return (
@@ -31,7 +45,7 @@ export default function MapPage() {
           Loading map data...
         </div>
       ) : (
-        <HeatMap data={mapData} />
+        <HeatMap data={markers} />
       )}
     </div>
   )

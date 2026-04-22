@@ -1,9 +1,11 @@
 fastapi
 uvicorn
 python-multipart
-google-generativeai
+
 python-dotenv
 httpx
 pillow
 pandas
 reportlab
+groq
+pytesseract

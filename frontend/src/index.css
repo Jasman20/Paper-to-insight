@@ -1,3 +1,12 @@
+/* Fix Leaflet map tiles showing correctly in Vite */
+.leaflet-container {
+  z-index: 1;
+  background: #0a0e1a;
+}
+
+.leaflet-tile-pane {
+  opacity: 1;
+}
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
