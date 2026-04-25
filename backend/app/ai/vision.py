@@ -11,9 +11,12 @@ load_dotenv()
 # 🔑 Groq client
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-# ⚙️ Tesseract path (IMPORTANT)
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+import shutil
 
+if shutil.which("tesseract") is None:
+    print("❌ Tesseract not found on Render server")
+else:
+    print("✅ Tesseract installed successfully")
 OCR_PROMPT = """
 You are an expert at reading handwritten field survey forms from rural India.
 
