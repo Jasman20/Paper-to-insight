@@ -1,7 +1,9 @@
+requests
+sqlalchemy
 fastapi
 uvicorn
 python-multipart
-
+openpyxl
 python-dotenv
 httpx
 pillow
