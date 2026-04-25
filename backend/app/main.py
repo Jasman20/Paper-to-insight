@@ -1,29 +1,24 @@
-# FastAPI main entry point
-# Run with: uvicorn app.main:app --reload
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.db.database import init_db
-from app.routes import survey, dashboard, reports
+from app.routes.survey    import router as survey_router
+from app.routes.dashboard import router as dashboard_router
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI(title="Paper2Insight API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allow all for hackathon
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Initialize SQLite tables on startup
-@app.on_event("startup")
-def startup():
-    init_db()
-
-app.include_router(survey.router)
-app.include_router(dashboard.router)
-app.include_router(reports.router)
+app.include_router(survey_router)
+app.include_router(dashboard_router)
 
 @app.get("/")
 def root():
-    return {"status": "Paper2Insight API running"}
+    return {"status": "Paper2Insight API running ✅"}
