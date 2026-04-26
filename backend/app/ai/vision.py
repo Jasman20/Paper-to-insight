@@ -23,7 +23,7 @@ def extract_survey_data(image_path: str) -> dict:
         mime = "image/jpeg" if ext in ["jpg", "jpeg"] else "image/png"
 
         response = client.chat.completions.create(
-            model="llama-4-scout-17b-16e-instruct",
+            model="llava-v1.5-7b-4096-preview",
             messages=[{
                 "role": "user",
                 "content": [
