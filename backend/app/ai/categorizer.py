@@ -21,17 +21,18 @@ Survey:
 - Location: {village_name}, {district}, {state}
 
 {{
-    "need_category": "MEDICAL",
-    "severity": "CRITICAL",
-    "severity_score": 9,
-    "severity_reasoning": "one sentence",
-    "immediate_action_needed": true,
-    "suggested_resources": [],
-    "estimated_cost_inr": "range",
-    "allocation_suggestion": "action"
+    "need_category": "MEDICAL or FOOD or WATER or SHELTER or OTHER",
+    "severity": "LOW or MEDIUM or HIGH or CRITICAL",
+    "severity_score": 1-10,
+    "severity_reasoning": "one sentence explanation",
+    "immediate_action_needed": true or false,
+    "suggested_resources": ["resource1", "resource2"],
+    "estimated_cost_inr": "estimated range",
+    "allocation_suggestion": "specific action to take"
 }}
-"""
 
+Base severity on urgency, people affected, and need type.
+"""
 FALLBACK = {
     "need_category": "OTHER",
     "severity": "MEDIUM",
