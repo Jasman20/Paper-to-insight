@@ -8,6 +8,13 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   timeout: 60000,
 })
+const BASE = import.meta.env.VITE_API_URL
+console.log('🔍 API URL:', BASE)  // ADD THIS LINE
+
+const api = axios.create({
+  baseURL: BASE,
+  timeout: 60000,
+})
 
 export const uploadSurvey  = (formData) => api.post('/api/survey/upload', formData)
 export const getAllSurveys  = ()         => api.get('/api/survey/all')
