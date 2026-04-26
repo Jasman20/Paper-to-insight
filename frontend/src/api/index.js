@@ -1,15 +1,7 @@
 import axios from 'axios'
 
-// ── REPLACE BASE URL ───────────────────────────────────────────────────
-// For local dev: http://localhost:8000
-// After Member 4 deploys: replace with Google Cloud Run URL in .env
-// ───────────────────────────────────────────────────────────────────────
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  timeout: 60000,
-})
 const BASE = import.meta.env.VITE_API_URL
-console.log('🔍 API URL:', BASE)  // ADD THIS LINE
+console.log('🔍 API URL:', BASE)
 
 const api = axios.create({
   baseURL: BASE,
