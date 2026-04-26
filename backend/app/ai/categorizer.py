@@ -11,7 +11,7 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 SEVERITY_PROMPT = """
 You are an expert NGO resource allocation specialist for rural India.
 
-Analyze and return ONLY JSON:
+Analyze and return ONLY raw JSON, no markdown:
 
 Survey:
 - Primary Need: {primary_need}
@@ -23,15 +23,19 @@ Survey:
 {{
     "need_category": "MEDICAL or FOOD or WATER or SHELTER or OTHER",
     "severity": "LOW or MEDIUM or HIGH or CRITICAL",
-    "severity_score": 1-10,
+    "severity_score": 7,
     "severity_reasoning": "one sentence explanation",
-    "immediate_action_needed": true or false,
-    "suggested_resources": ["resource1", "resource2"],
-    "estimated_cost_inr": "estimated range",
-    "allocation_suggestion": "specific action to take"
+    "immediate_action_needed": true,
+    "suggested_resources": ["Resource 1", "Resource 2", "Resource 3"],
+    "estimated_cost_inr": "50000-100000",
+    "allocation_suggestion": "specific action to take immediately"
 }}
 
-Base severity on urgency, people affected, and need type.
+IMPORTANT: suggested_resources must ALWAYS be a list of 2-4 specific items.
+- For MEDICAL: ["Mobile medical unit", "Medicines and first aid", "Doctor deployment"]
+- For FOOD: ["Rice and dal supply", "Water tankers", "Ration distribution team"]
+- For WATER: ["Water tanker deployment", "Hand pump repair team", "Water purification tablets"]
+- For SHELTER: ["Tarpaulin sheets", "Emergency shelter kits", "Construction team"]
 """
 FALLBACK = {
     "need_category": "OTHER",
