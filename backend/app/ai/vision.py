@@ -26,17 +26,19 @@ Extract ALL information and return ONLY raw JSON.
     "village_name": "village name or null",
     "district": "district name or null",
     "state": "state name or null",
-    "people_affected": number,
-    "primary_need": "MEDICAL",
-    "description": "summary",
-    "urgency_indicators": [],
+    "people_affected": number or null,
+    "primary_need": "MEDICAL or FOOD or WATER or SHELTER or OTHER",
+    "description": "summary of the problem",
+    "urgency_indicators": ["list", "of", "urgent", "phrases"],
     "other_needs": [],
     "surveyor_name": "name or null",
     "survey_date": "date or null",
-    "raw_text": "text",
+    "raw_text": "full extracted text",
     "language_detected": "Hindi/English/Mixed",
     "confidence": "HIGH/MEDIUM/LOW"
 }
+
+Choose primary_need based on actual content. WATER if water shortage/pump issues. MEDICAL if health/disease. FOOD if hunger/rations. SHELTER if housing.
 """
 
 def extract_survey_data(image_path: str) -> dict:
