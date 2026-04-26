@@ -1,5 +1,7 @@
-import json, re, os, base64
+import json, re, os
 from groq import Groq
+from PIL import Image
+import pytesseract
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,52 +18,55 @@ def extract_survey_data(image_path: str) -> dict:
     }
 
     try:
-        with open(image_path, "rb") as f:
-            image_data = base64.b64encode(f.read()).decode("utf-8")
+        # Step 1: OCR with Tesseract
+        img = Image.open(image_path)
+        extracted_text = pytesseract.image_to_string(img)
+        print(f"\n📄 OCR Text:\n{extracted_text[:300]}\n")
 
-        ext = image_path.split(".")[-1].lower()
-        mime = "image/jpeg" if ext in ["jpg", "jpeg"] else "image/png"
+        if not extracted_text.strip():
+            print("❌ OCR returned empty text")
+            return FALLBACK
 
+        # Step 2: Send to Groq text model
         response = client.chat.completions.create(
-            model="llama-3.2-11b-vision-preview",
+            model="llama-3.1-8b-instant",
             messages=[{
                 "role": "user",
-                "content": [
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:{mime};base64,{image_data}"
-                        }
-                    },
-                    {
-                        "type": "text",
-                        "text": """You are an expert at reading handwritten field survey forms from rural India.
-Read this survey image carefully and return ONLY raw JSON, no markdown, no explanation:
+                "content": f"""You are an expert at reading field survey forms from rural India.
+Extract information from this survey text and return ONLY raw JSON with no markdown or explanation.
 
-{
+IMPORTANT RULES:
+- primary_need must be exactly one of: MEDICAL, FOOD, WATER, SHELTER, OTHER
+- Choose WATER if text mentions: water, pump, hand pump, borewell, drinking water, water shortage
+- Choose FOOD if text mentions: food, hunger, ration, dal, rice, famine, starvation  
+- Choose MEDICAL if text mentions: medical, disease, hospital, medicine, health, doctor
+- Choose SHELTER if text mentions: shelter, house, roof, flood damage, homeless
+- people_affected must be a number (just digits) or null
+
+Survey Text:
+{extracted_text}
+
+Return this exact JSON structure:
+{{
     "village_name": "village name or null",
     "district": "district name or null",
     "state": "state name or null",
-    "people_affected": number or null,
-    "primary_need": "MEDICAL or FOOD or WATER or SHELTER or OTHER",
-    "description": "summary of the problem",
-    "urgency_indicators": ["urgent phrases from form"],
+    "people_affected": 0,
+    "primary_need": "WATER",
+    "description": "one sentence summary",
+    "urgency_indicators": ["phrase1", "phrase2"],
     "other_needs": [],
     "surveyor_name": "name or null",
     "survey_date": "date or null",
-    "raw_text": "all text you can read from the image",
-    "language_detected": "Hindi/English/Mixed",
-    "confidence": "HIGH/MEDIUM/LOW"
-}
-
-Choose primary_need based on content: WATER if water/pump issues, MEDICAL if health/disease, FOOD if hunger/rations, SHELTER if housing."""
-                    }
-                ]
+    "raw_text": "full survey text",
+    "language_detected": "English",
+    "confidence": "HIGH"
+}}"""
             }]
         )
 
         raw = response.choices[0].message.content.strip()
-        print(f"\n📋 Groq Vision response:\n{raw[:500]}\n")
+        print(f"\n📋 Groq response:\n{raw[:500]}\n")
 
         result = None
         try:
