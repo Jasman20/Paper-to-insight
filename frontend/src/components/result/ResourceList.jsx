@@ -5,7 +5,9 @@ const P_COLORS = {
 }
 
 function normalizeResource(r) {
-  // Handle different key names from different AI providers
+  if (typeof r === 'string') {
+    return { item: r, quantity: '', priority: 'WITHIN_WEEK' }
+  }
   return {
     item:     r.item || r.resource || r.name || r.resource_type || 'Resource',
     quantity: r.quantity || r.amount || r.count || '',
@@ -19,8 +21,8 @@ export default function ResourceList({ resources }) {
 
   if (Array.isArray(resources)) {
     items = resources
-      .filter(r => r && typeof r === 'object')
-      .map(normalizeResource)
+  .filter(r => r && (typeof r === 'object' || typeof r === 'string'))
+  .map(normalizeResource))
   } else if (typeof resources === 'string') {
     try {
       const parsed = JSON.parse(resources)
