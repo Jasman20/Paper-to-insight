@@ -10,13 +10,8 @@ app = FastAPI(title="Paper2Insight API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://paper-to-insight.vercel.app",
-        "https://*.vercel.app",
-        "*"
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
