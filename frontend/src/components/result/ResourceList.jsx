@@ -16,18 +16,17 @@ function normalizeResource(r) {
 }
 
 export default function ResourceList({ resources }) {
-  // Safety checks — handle null, undefined, strings, empty arrays
   let items = []
 
   if (Array.isArray(resources)) {
     items = resources
-  .filter(r => r && (typeof r === 'object' || typeof r === 'string'))
-  .map(normalizeResource))
+      .filter(r => r && (typeof r === 'object' || typeof r === 'string'))
+      .map(normalizeResource)
   } else if (typeof resources === 'string') {
     try {
       const parsed = JSON.parse(resources)
       if (Array.isArray(parsed)) {
-        items = parsed.filter(r => r && typeof r === 'object').map(normalizeResource)
+        items = parsed.filter(r => r && (typeof r === 'object' || typeof r === 'string')).map(normalizeResource)
       }
     } catch { /* ignore parse errors */ }
   }
@@ -81,4 +80,4 @@ export default function ResourceList({ resources }) {
       </div>
     </div>
   )
-}
+                }
